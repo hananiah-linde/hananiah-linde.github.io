@@ -1,8 +1,8 @@
 ---
 title: Hello World
 date: 2022-08-11 12:00:00 -500
-categories:
-tags:
+categories: [software,development]
+tags: [csharp]
 ---
 
 # First Blog Post
