@@ -67,3 +67,94 @@ public class DataContext
  ``` terminal
 dotnet add package Microsoft.EntityFrameworkCore
  ```
+
+Now we can inherhit from DbContext and add the using statement for the namespace:
+``` c#
+using Microsoft.EntityFrameworkCore;
+
+namespace EfcoreLibrary;
+public class DataContext : DbContext
+{
+
+}
+```
+
+When our BlazorServer UI registers the DataContext object (more on that later), it needs a contructor with a DbContextOptions<DataContext<DataContext>> parameter:
+``` c#
+using Microsoft.EntityFrameworkCore;
+
+namespace EfcoreLibrary;
+public class DataContext : DbContext
+{
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    {
+    }
+}
+```
+
+Now let's add our Model. I'll create a folder in the EfcoreLibrary project called Models and add the Contact class there:
+``` c#
+namespace EfcoreLibrary.Models;
+public class Contact
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
+    public string Address { get; set; }
+}
+```
+
+Now let's add this model to the Context class to register it as an entity:
+``` c#
+using EfcoreLibrary.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace EfcoreLibrary;
+public class DataContext : DbContext
+{
+    public DataContext(DbContextOptions<DataContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Contact> Contacts { get; set; }
+}
+```
+For the purposes of this post, I am not going to configure the entity and just let EF define the table. I do not reccomend this for real applications. You should always define/configure the entity to create the table exactly how you need it.
+
+Now let's turn our attention to the UI project. We can start by adding the DbContext as a service in the Program.cs file.
+In this demo, I'm going to use PostgreSQL for the database. We'll need to add a few packages from Nuget. Change directory into the BlazorServerUI folder and run the following command:
+``` terminal
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+```
+
+Now let's add the code to add the DbContext to our services in Program.cs:
+```c#
+using BlazorServerUI.Data;
+using EfcoreLibrary;
+using Microsoft.EntityFrameworkCore;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddDbContextFactory<DataContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+```
+
+Here we are using the AddDbContextFactory instead of AddDbContext becuase we are using Blazor Server. For more information on why we are doing that, you can check out this [article](https://docs.microsoft.com/en-us/ef/core/dbcontext-configuration/#using-a-dbcontext-factory-eg-for-blazor).
+We are also getting the connection string from appsettings.json. Here's what that looks like:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost; Port=5432; Database=DemoEfcore; User Id=postgres; Password=fakepassword"
+  }
+}
+```
+
