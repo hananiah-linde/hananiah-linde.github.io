@@ -1,6 +1,6 @@
 ---
 title: Using Entity Framework Core in Separate Class Library
-date: 2022-08-19 16:30:00 -500
+date: 2022-08-13 16:30:00 -500
 categories: [software]
 tags: [csharp,entityframework,.net]
 ---
