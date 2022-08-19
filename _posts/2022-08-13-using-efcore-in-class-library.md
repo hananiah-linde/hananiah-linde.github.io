@@ -1,5 +1,5 @@
 ---
-title: DRAFT Using Entity Framework Core in Separate Class Library
+title: Using Entity Framework Core in Separate Class Library
 date: 2022-08-13 16:30:00 -500
 categories: [software]
 tags: [csharp,entityframework,.net]
@@ -158,3 +158,45 @@ We are also getting the connection string from appsettings.json. Here's what tha
 }
 ```
 
+Now we can look at adding out first migration, but before we do that, we need to add a few more NuGet Packages.
+
+From the BlazorServerUI Directory add the following package:
+```terminal
+dotnet add package Microsoft.EntityFrameworkCore.Design
+```
+
+Now we can change directory back to EfcoreLibrary and run the following command to add our first Migration:
+```terminal
+dotnet ef migrations add initial --startup-project ..\BlazorServerUI\BlazorServerUI.csproj
+```
+
+Output:
+
+```terminal
+Build started...
+Build succeeded.
+info: Microsoft.EntityFrameworkCore.Infrastructure[10403]
+      Entity Framework Core 6.0.8 initialized 'DataContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL:6.0.6+6fa8f3c27a7c241a66e72a6c09e0b252509215d0' with options: None
+Done. To undo this action, use 'ef migrations remove'
+```
+
+This created the migration in the Libary Project in a folder named Migrations. However, if you go look at the migration, you'll see that there are a lot of errors in code that was generated and you won't be able to apply the migration. Trying to apply the migration will result in the following:
+``` terminal
+ dotnet ef database update --startup-project ..\BlazorServerUI\BlazorServerUI.csproj
+Build started...
+Build failed. Use dotnet build to see the errors.
+```
+This is because we are still missing a few more Nuget Packages.
+
+Let's add the following the Library project:
+```terminal
+dotnet add package Microsoft.EntityFrameworkCore.Relational
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+```
+
+Now all the build errors have been resolved, let's update the database:
+``` terminal
+dotnet ef database update --startup-project ..\BlazorServerUI\BlazorServerUI.csproj
+```
+
+Now we successfully separated our DataContext from our UI. This allows us to share the DataContext/EF Core with other projects in the same solution in a clean manner. 
