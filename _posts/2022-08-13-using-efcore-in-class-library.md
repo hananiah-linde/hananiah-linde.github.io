@@ -1,11 +1,11 @@
 ---
-title: Using Entity Framework Core in Separate Class Library
+title: Using Entity Framework Core in Separate Class Library Using PostgreSql
 date: 2022-08-13 16:30:00 -500
 categories: [software]
 tags: [csharp,entityframework,.net]
 ---
 
-# Using Entity Framework Core in Separate Class Library
+# Using Entity Framework Core in Separate Class Library Using PostgreSql
 
 In the post, let's walk through using Entity Framework Core in a separate class library using Blazor Server as the UI. 
 
