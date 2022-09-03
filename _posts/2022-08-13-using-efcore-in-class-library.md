@@ -11,7 +11,7 @@ In the post, let's walk through using Entity Framework Core in a separate class 
 
 I like to get straight to the point of this post so if you want to learn more about Entity Framework, you can check out Microsoft's documentation [here](https://docs.microsoft.com/en-us/ef/core/). 
 
-You can check out the Github repo for this post [here]().
+You can check out the Github repo for this post [here](https://github.com/hananiah-linde/EfcorePostgresApp).
 
 I'm going to use the command line tools to create the project and folder structure instead of using Visual Studio 2022 but if you are following along in VS, feel free to just use that to create the project.
 
